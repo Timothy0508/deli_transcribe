@@ -56,6 +56,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   isar_generator: ^3.1.0+1
   build_runner:
+  msix: ^3.16.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -95,3 +96,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+msix_config:
+  display_name: Deli Transcribe
+  publisher_display_name: Hammered
+  identity_name: com.hammered.deli_transcribe
+  msix_version: 0.0.1.0
+  logo_path: C:\path\to\logo.png
+  capabilities: internetClient, location, microphone, webcam
