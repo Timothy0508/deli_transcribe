@@ -100,7 +100,7 @@ flutter:
 msix_config:
   display_name: Deli Transcribe
   publisher_display_name: Hammered
-  identity_name: com.hammered.deli_transcribe
+  identity_name: com.hammered.transcribe
   msix_version: 0.0.1.0
-  logo_path: C:\path\to\logo.png
-  capabilities: internetClient, location, microphone, webcam
+  logo_path: ./windows/runner/resources/app_icon.ico
+  capabilities: files
