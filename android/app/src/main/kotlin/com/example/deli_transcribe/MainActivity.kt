@@ -1,4 +1,4 @@
-package com.hammered.deli_transcribe
+package com.example.deli_transcribe
 
 import io.flutter.embedding.android.FlutterActivity
 
