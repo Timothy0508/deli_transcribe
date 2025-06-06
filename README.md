@@ -24,7 +24,7 @@ Go to [wiki](https://github.com/Timothy0508/deli_transcribe/wiki).
 - An IDE (Andriod Studio, Visual Studio Code...)
 - A flutter extension on your IDE
 
-## Set up
+### Set up
 1. Clone project `git clone https://github.com/Timothy0508/deli_transcribe.git`
 2. Get dependencies
 ```powershell
