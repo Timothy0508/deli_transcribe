@@ -6,6 +6,16 @@ An application to transcribe audio or video.
 
 Go to release page and download the installer.
 
+# Capability
+| Paltform | Status |
+| --- | --- |
+| Windows | ✅ |
+| Android | ❌ |
+| Linux | ❌ |
+
+## User manual
+Go to [wiki](https://github.com/Timothy0508/deli_transcribe/wiki).
+
 # Development
 ## Requirements
 - [Flutter](https://docs.flutter.dev/install)
