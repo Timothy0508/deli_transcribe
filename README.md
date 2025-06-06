@@ -6,7 +6,7 @@ An application to transcribe audio or video.
 
 Go to release page and download the installer.
 
-# Capability
+## Capability
 | Paltform | Status |
 | --- | --- |
 | Windows | ✅ |
@@ -16,8 +16,8 @@ Go to release page and download the installer.
 ## User manual
 Go to [wiki](https://github.com/Timothy0508/deli_transcribe/wiki).
 
-# Development
-## Requirements
+## Development
+### Requirements
 - [Flutter](https://docs.flutter.dev/install)
 - Visual Studio (For windows developement)
 ### Recommendation
