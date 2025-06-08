@@ -7,6 +7,11 @@ enum AppFeatures {
     title: "Transcription",
     route: TranscriptionProjectsPage(),
     icon: Icon(Icons.transcribe),
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF669B2A), Color(0xFF53C1ED)],
+    ),
   );
 
   final String title;
@@ -15,10 +20,13 @@ enum AppFeatures {
 
   final Icon icon;
 
+  final Gradient? gradient;
+
   const AppFeatures({
     required this.title,
     required this.route,
     required this.icon,
+    this.gradient,
   });
 }
 
@@ -40,6 +48,10 @@ class _FeatureCardState extends State<FeatureCard> {
         borderRadius: BorderRadius.circular(10),
         child: Container(
           padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: widget.feature.gradient,
+          ),
           child: Row(
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
