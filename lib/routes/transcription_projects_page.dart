@@ -61,7 +61,9 @@ class _TranscriptionProjectsPageState extends State<TranscriptionProjectsPage> {
         slivers: [
           SliverAppBar(
             expandedHeight: 200,
-            flexibleSpace: FlexibleSpaceBar(title: Text('Deli Transcribe')),
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Transcription Projects'),
+            ),
             actions: [
               ElevatedButton.icon(
                 onPressed:

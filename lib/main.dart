@@ -2,7 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'api/database.dart';
-import 'routes/transcription_projects_page.dart';
+import 'routes/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Deli Transcribe',
       theme: FlexThemeData.light(scheme: FlexScheme.greenM3),
-      home: const TranscriptionProjectsPage(),
+      home: const HomePage(),
     );
   }
 }
