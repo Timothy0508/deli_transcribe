@@ -44,7 +44,12 @@ class _TranscriptionProjectsPageState extends State<TranscriptionProjectsPage> {
 
         if (projects == null || projects.isEmpty) {
           return SliverToBoxAdapter(
-            child: Center(child: Text('No transcription projects found.')),
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Text('No transcription projects found.'),
+              ),
+            ),
           );
         }
 
@@ -63,6 +68,16 @@ class _TranscriptionProjectsPageState extends State<TranscriptionProjectsPage> {
             expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
               title: Text('Transcription Projects'),
+
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF669B2A), Color(0xFF53C1ED)],
+                  ),
+                ),
+              ),
             ),
             actions: [
               ElevatedButton.icon(
