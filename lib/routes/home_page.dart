@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 1.5,
+        childAspectRatio: 3.5,
       ),
     );
     return Scaffold(body: CustomScrollView(slivers: [appBar, body]));
