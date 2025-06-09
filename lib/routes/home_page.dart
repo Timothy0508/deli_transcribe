@@ -26,6 +26,19 @@ class _HomePageState extends State<HomePage> {
         childAspectRatio: 3.5,
       ),
     );
-    return Scaffold(body: CustomScrollView(slivers: [appBar, body]));
+    var naviRail = NavigationRail(
+      destinations: [
+        NavigationRailDestination(icon: Icon(Icons.extension), label: Text('')),
+      ],
+      selectedIndex: 0,
+    );
+    return Scaffold(
+      body: Row(
+        children: [
+          naviRail,
+          Expanded(child: CustomScrollView(slivers: [appBar, body])),
+        ],
+      ),
+    );
   }
 }
