@@ -31,6 +31,7 @@ class _OcrProjectPageState extends State<OcrProjectPage> {
     return Scaffold(
       body: CustomScrollView(slivers: [appBar]),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
         onPressed:
             () => Navigator.push(
               context,
