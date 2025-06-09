@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _navISExpanded = false;
+  int _navIndex = 0;
   @override
   Widget build(BuildContext context) {
     var appBar = SliverAppBar(
@@ -27,8 +29,26 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     var naviRail = NavigationRail(
+      leading: Row(
+        children: [
+          IconButton(
+            onPressed:
+                () => setState(() {
+                  _navISExpanded = !_navISExpanded;
+                }),
+            icon: Icon(Icons.menu),
+          ),
+        ],
+      ),
       destinations: [
-        NavigationRailDestination(icon: Icon(Icons.extension), label: Text('')),
+        NavigationRailDestination(
+          icon: Icon(Icons.transcribe),
+          label: Text('Transcription'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.text_fields),
+          label: Text('OCR'),
+        ),
       ],
       selectedIndex: 0,
     );
