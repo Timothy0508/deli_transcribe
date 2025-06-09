@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../routes/ocr_page.dart';
 import '../routes/transcription_projects_page.dart';
 
 enum AppFeatures {
@@ -11,6 +12,16 @@ enum AppFeatures {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [Color(0xFF669B2A), Color(0xFF53C1ED)],
+    ),
+  ),
+  ocr(
+    title: "OCR",
+    route: OcrPage(),
+    icon: Icon(Icons.text_fields),
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFDD61FF), Color(0xFF4FA7FF)],
     ),
   );
 
