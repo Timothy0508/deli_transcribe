@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../routes/ocr_page.dart';
+import '../routes/ocr_project_page.dart';
 import '../routes/transcription_projects_page.dart';
 
 enum AppFeatures {
@@ -16,7 +16,7 @@ enum AppFeatures {
   ),
   ocr(
     title: "OCR",
-    route: OcrPage(),
+    route: OcrProjectPage(),
     icon: Icon(Icons.text_fields),
     gradient: LinearGradient(
       begin: Alignment.topLeft,
