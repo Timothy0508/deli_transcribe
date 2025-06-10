@@ -10,26 +10,9 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   bool _navISExpanded = false;
   int _navIndex = 0;
-  late AnimationController _menuAnimationController;
-
-  @override
-  void initState() {
-    _menuAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 800),
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _menuAnimationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,19 +26,11 @@ class _HomePageState extends State<HomePage>
           children: [
             IconButton(
               onPressed: () {
-                if (_navISExpanded) {
-                  _menuAnimationController.reverse();
-                } else {
-                  _menuAnimationController.forward();
-                }
                 setState(() {
                   _navISExpanded = !_navISExpanded;
                 });
               },
-              icon: AnimatedIcon(
-                icon: AnimatedIcons.menu_close,
-                progress: _menuAnimationController,
-              ),
+              icon: _navISExpanded ? Icon(Icons.menu_open) : Icon(Icons.menu),
             ),
             FloatingActionButton(
               elevation: 0,
@@ -70,7 +45,7 @@ class _HomePageState extends State<HomePage>
         NavigationRailDestination(
           icon: Icon(Icons.transcribe_outlined),
           selectedIcon: Icon(Icons.transcribe),
-          label: Text('Transcription'),
+          label: Text('Transcribe'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.document_scanner_outlined),
