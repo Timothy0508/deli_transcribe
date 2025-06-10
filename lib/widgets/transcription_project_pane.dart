@@ -38,7 +38,6 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
             height: MediaQuery.of(context).size.height,
             child: Center(child: Text('Error: ${snapshot.error}')),
           );
-          ;
         }
 
         final project = snapshot.data;
