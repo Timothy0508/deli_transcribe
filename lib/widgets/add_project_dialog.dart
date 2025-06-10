@@ -21,7 +21,7 @@ class _AddProjectDialogState extends State<AddProjectDialog> {
       content: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.all(24),
+        margin: EdgeInsets.all(20),
         child: GridView(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,

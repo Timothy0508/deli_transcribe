@@ -24,11 +24,16 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           spacing: 10,
           children: [
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _navIsExpanded = !_navIsExpanded;
+                });
+              },
+              icon: _navIsExpanded ? Icon(Icons.menu_open) : Icon(Icons.menu),
+            ),
             FloatingActionButton(
               elevation: 0,
-              hoverElevation: 0,
-              focusElevation: 0,
-              highlightElevation: 0,
               onPressed: () => showAddProjectDialog(context),
               isExtended: _navIsExpanded,
               child: Icon(Icons.add),
