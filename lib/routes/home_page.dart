@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/add_project_dialog.dart';
 import '../widgets/feature_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage>
             ),
             FloatingActionButton(
               elevation: 0,
-              onPressed: null,
+              onPressed: () => showAddProjectDialog(context),
               isExtended: _navISExpanded,
               child: Icon(Icons.add),
             ),
