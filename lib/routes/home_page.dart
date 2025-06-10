@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _navISExpanded = false;
+  bool _navIsExpanded = false;
   int _navIndex = 0;
 
   @override
@@ -27,15 +27,15 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               onPressed: () {
                 setState(() {
-                  _navISExpanded = !_navISExpanded;
+                  _navIsExpanded = !_navIsExpanded;
                 });
               },
-              icon: _navISExpanded ? Icon(Icons.menu_open) : Icon(Icons.menu),
+              icon: _navIsExpanded ? Icon(Icons.menu_open) : Icon(Icons.menu),
             ),
             FloatingActionButton(
               elevation: 0,
               onPressed: () => showAddProjectDialog(context),
-              isExtended: _navISExpanded,
+              isExtended: _navIsExpanded,
               child: Icon(Icons.add),
             ),
           ],

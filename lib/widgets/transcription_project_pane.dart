@@ -29,33 +29,30 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
       stream: projectStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Center(child: CircularProgressIndicator()),
-          );
+          return Expanded(child: Center(child: CircularProgressIndicator()));
         } else if (snapshot.hasError) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
+          return Expanded(
             child: Center(child: Text('Error: ${snapshot.error}')),
           );
         }
 
         final project = snapshot.data;
         if (project == null || project.isEmpty) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Center(child: Text('Cannot find projects')),
-          );
+          return Expanded(child: Center(child: Text('Cannot find projects')));
         }
 
-        return ListView.builder(
-          itemBuilder:
-              (context, index) => ProjectListTile(project: project[index]),
-          itemCount: project.length,
+        return Expanded(
+          child: ListView.builder(
+            itemBuilder:
+                (context, index) => ProjectListTile(project: project[index]),
+            itemCount: project.length,
+          ),
         );
       },
     );
 
-    return Card(child: body);
+    var search = SearchBar();
+
+    return Card(child: Column(children: [search, body]));
   }
 }
