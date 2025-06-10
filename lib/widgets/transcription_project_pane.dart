@@ -71,7 +71,6 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
             projectStream = db.where().watch(fireImmediately: true);
           }
           projectStream = db
-              .where()
               .filter()
               .titleEqualTo(value)
               .watch(fireImmediately: true);
