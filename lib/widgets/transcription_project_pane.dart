@@ -42,18 +42,16 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
           return Expanded(child: Center(child: Text('Cannot find projects')));
         }
 
-        return Expanded(
-          child: ListView.builder(
-            itemBuilder:
-                (context, index) => ProjectListTile(project: project[index]),
-            itemCount: project.length,
-          ),
+        return ListView.builder(
+          itemBuilder:
+              (context, index) => ProjectListTile(project: project[index]),
+          itemCount: project.length,
         );
       },
     );
 
     var search = Padding(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(8),
       child: SearchBar(
         elevation: WidgetStatePropertyAll(0),
         controller: _searchController,
@@ -79,6 +77,6 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
       ),
     );
 
-    return Card(child: Column(children: [search, body]));
+    return Column(children: [search, Expanded(child: Card(child: body))]);
   }
 }
