@@ -14,6 +14,7 @@ class TranscriptionProjectPane extends StatefulWidget {
 
 class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
   late Isar _isar;
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -51,7 +52,32 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
       },
     );
 
-    var search = SearchBar();
+    var search = Padding(
+      padding: EdgeInsets.all(10),
+      child: SearchBar(
+        elevation: WidgetStatePropertyAll(0),
+        controller: _searchController,
+        leading: const Icon(Icons.search),
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 16)),
+        hintText: 'Search',
+        trailing: [
+          IconButton(
+            onPressed: () => _searchController.clear(),
+            icon: Icon(Icons.close),
+          ),
+        ],
+        onChanged: (value) async {
+          if (value.isEmpty) {
+            projectStream = db.where().watch(fireImmediately: true);
+          }
+          projectStream = db
+              .where()
+              .filter()
+              .titleEqualTo(value)
+              .watch(fireImmediately: true);
+        },
+      ),
+    );
 
     return Card(child: Column(children: [search, body]));
   }
