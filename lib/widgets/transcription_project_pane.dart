@@ -29,14 +29,24 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
       stream: projectStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: CircularProgressIndicator()),
+          );
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text('Error: ${snapshot.error}')),
+          );
+          ;
         }
 
         final project = snapshot.data;
         if (project == null || project.isEmpty) {
-          return Text('Cannot find projects');
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: Text('Cannot find projects')),
+          );
         }
 
         return ListView.builder(
