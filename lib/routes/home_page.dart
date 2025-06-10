@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/add_project_dialog.dart';
-import '../widgets/feature_card.dart';
+import '../widgets/transcription_project_pane.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,20 +33,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    var appBar = SliverAppBar(
-      expandedHeight: 200,
-      flexibleSpace: FlexibleSpaceBar(title: Text('Deli Transcribe')),
-    );
-    var body = SliverGrid(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => FeatureCard(feature: AppFeatures.values[index]),
-        childCount: AppFeatures.values.length,
-      ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3.5,
-      ),
-    );
+    var body = TranscriptionProjectPane();
     var naviRail = NavigationRail(
       leading: Container(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -98,13 +85,6 @@ class _HomePageState extends State<HomePage>
       selectedIndex: _navIndex,
       labelType: NavigationRailLabelType.all,
     );
-    return Scaffold(
-      body: Row(
-        children: [
-          naviRail,
-          Expanded(child: CustomScrollView(slivers: [appBar, body])),
-        ],
-      ),
-    );
+    return Scaffold(body: Row(children: [naviRail, Expanded(child: body)]));
   }
 }
