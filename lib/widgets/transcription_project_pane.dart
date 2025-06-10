@@ -42,6 +42,7 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
         return ListView.builder(
           itemBuilder:
               (context, index) => ProjectListTile(project: project[index]),
+          itemCount: project.length,
         );
       },
     );
