@@ -14,11 +14,16 @@ class AddProjectDialog extends StatefulWidget {
 class _AddProjectDialogState extends State<AddProjectDialog> {
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
+    return AlertDialog(
+      title: Text('Create new project'),
+      content: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.all(20),
         child: GridView(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
+            childAspectRatio: 3,
           ),
           children: List.generate(
             AppFeatures.values.length,
@@ -26,6 +31,12 @@ class _AddProjectDialogState extends State<AddProjectDialog> {
           ),
         ),
       ),
+      actions: [
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancel'),
+        ),
+      ],
     );
   }
 }
