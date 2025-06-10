@@ -7,6 +7,8 @@ showAddProjectDialog(BuildContext context) {
 }
 
 class AddProjectDialog extends StatefulWidget {
+  const AddProjectDialog({super.key});
+
   @override
   State<StatefulWidget> createState() => _AddProjectDialogState();
 }
