@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/add_project_dialog.dart';
+import '../widgets/ocr_projecct_pane.dart';
 import '../widgets/transcription_project_pane.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var body = TranscriptionProjectPane();
+    var body = [TranscriptionProjectPane(), OcrProjectPane()];
     var naviRail = NavigationRail(
       leading: Container(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -55,6 +56,8 @@ class _HomePageState extends State<HomePage> {
       selectedIndex: _navIndex,
       labelType: NavigationRailLabelType.all,
     );
-    return Scaffold(body: Row(children: [naviRail, Expanded(child: body)]));
+    return Scaffold(
+      body: Row(children: [naviRail, Expanded(child: body[_navIndex])]),
+    );
   }
 }
