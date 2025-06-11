@@ -1,47 +1,48 @@
 import 'package:flutter/material.dart';
 
+import '../modules/ocr_project.dart';
+
 class OcrPage extends StatefulWidget {
-  const OcrPage({super.key});
+  final OcrProject? project;
+
+  const OcrPage({super.key, this.project});
 
   @override
   State<StatefulWidget> createState() => _OcrPageState();
 }
 
 class _OcrPageState extends State<OcrPage> {
-  var _selectedMode = {'picture'};
+  Image? _image;
 
   @override
   Widget build(BuildContext context) {
-    var appBar = SliverAppBar(
-      expandedHeight: 200,
-      flexibleSpace: FlexibleSpaceBar(title: Text('Ocr')),
+    var appBar = AppBar(
+      title: Text(widget.project?.title ?? 'Unnamed Project'),
     );
 
-    var switcher = SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: SegmentedButton(
-          segments: [
-            ButtonSegment(
-              value: 'picture',
-              label: Text('Picture'),
-              icon: Icon(Icons.photo),
+    var picturePane = Card(
+      child: Center(
+        child:
+            _image ??
+            FloatingActionButton.extended(
+              onPressed: null,
+              icon: Icon(Icons.add_photo_alternate_outlined),
+              label: Text('Add picture'),
             ),
-            ButtonSegment(
-              value: 'text',
-              label: Text('Text'),
-              icon: Icon(Icons.text_fields),
-            ),
-          ],
-          selected: _selectedMode,
-          onSelectionChanged:
-              (value) => setState(() {
-                _selectedMode = value;
-              }),
-        ),
+      ),
+    );
+    var textPane = Card(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: SelectableText('test'),
       ),
     );
 
-    return Scaffold(body: CustomScrollView(slivers: [appBar, switcher]));
+    return Scaffold(
+      appBar: appBar,
+      body: Row(
+        children: [Expanded(child: picturePane), Expanded(child: textPane)],
+      ),
+    );
   }
 }
