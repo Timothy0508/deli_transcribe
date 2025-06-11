@@ -15,19 +15,21 @@ class TranscriptionProjectPane extends StatefulWidget {
 class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
   late Isar _isar;
   TextEditingController _searchController = TextEditingController();
+  late IsarCollection<Transcriptions> _db;
+  late Stream<List> _projectStream;
 
   @override
   void initState() {
     _isar = Database.isar;
+    _db = _isar.transcriptions;
+    _projectStream = _db.where().watch(fireImmediately: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var db = _isar.transcriptions;
-    var projectStream = db.where().watch(fireImmediately: true);
     var body = StreamBuilder(
-      stream: projectStream,
+      stream: _projectStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Expanded(child: Center(child: CircularProgressIndicator()));
@@ -66,14 +68,21 @@ class _TranscriptionProjectPaneState extends State<TranscriptionProjectPane> {
             icon: Icon(Icons.close),
           ),
         ],
-        onChanged: (value) async {
+        onChanged: (value) {
           if (value.isEmpty) {
-            projectStream = db.where().watch(fireImmediately: true);
+            setState(() {
+              _projectStream = _db.where().watch(fireImmediately: true);
+            });
+          } else {
+            setState(() {
+              _projectStream = _db
+                  .where()
+                  .filter()
+                  .titleContains(value)
+                  .build()
+                  .watch(fireImmediately: true);
+            });
           }
-          projectStream = db
-              .filter()
-              .titleEqualTo(value)
-              .watch(fireImmediately: true);
         },
       ),
     );
