@@ -28,7 +28,10 @@ class _OcrPageState extends State<OcrPage> {
       child: Center(
         child:
             _imagePath != null
-                ? Image.file(File(_imagePath!))
+                ? Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Image.file(File(_imagePath!)),
+                )
                 : FloatingActionButton.extended(
                   onPressed: () async {
                     var result = await FilePicker.platform.pickFiles(
