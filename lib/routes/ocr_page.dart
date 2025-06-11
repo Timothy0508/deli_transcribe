@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../modules/ocr_project.dart';
@@ -12,30 +15,44 @@ class OcrPage extends StatefulWidget {
 }
 
 class _OcrPageState extends State<OcrPage> {
-  Image? _image;
+  String? _imagePath;
 
   @override
   Widget build(BuildContext context) {
-    var appBar = AppBar(
-      title: Text(widget.project?.title ?? 'Unnamed Project'),
-    );
+    var title = widget.project?.title ?? 'Unnamed Project';
+    var ocrResult = widget.project?.result;
+
+    var appBar = AppBar(title: Text(title));
 
     var picturePane = Card(
       child: Center(
         child:
-            _image ??
-            FloatingActionButton.extended(
-              onPressed: null,
-              icon: Icon(Icons.add_photo_alternate_outlined),
-              label: Text('Add picture'),
-            ),
+            _imagePath != null
+                ? Image.file(File(_imagePath!))
+                : FloatingActionButton.extended(
+                  onPressed: () async {
+                    var result = await FilePicker.platform.pickFiles(
+                      type: FileType.image,
+                    );
+                    if (result == null) return;
+                    debugPrint(result.files.first.path);
+                    setState(() {
+                      _imagePath = result.files.first.path;
+                    });
+                  },
+                  icon: Icon(Icons.add_photo_alternate_outlined),
+                  label: Text('Add picture'),
+                ),
       ),
     );
     var textPane = Card(
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: SelectableText('test'),
-      ),
+      child:
+          ocrResult != null
+              ? SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: SelectableText(ocrResult),
+              )
+              : Center(child: Text('No detection')),
     );
 
     return Scaffold(
