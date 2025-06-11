@@ -29,7 +29,18 @@ class _AddProjectDialogState extends State<AddProjectDialog> {
           ),
           children: List.generate(
             AppFeatures.values.length,
-            (index) => FeatureCard(feature: AppFeatures.values[index]),
+            (index) => FeatureCard(
+              feature: AppFeatures.values[index],
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppFeatures.values[index].route,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

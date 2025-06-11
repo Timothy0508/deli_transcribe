@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../routes/ocr_project_page.dart';
-import '../routes/transcription_projects_page.dart';
+import '../routes/ocr_page.dart';
+import '../routes/transcription_page.dart';
 
 enum AppFeatures {
   transcription(
     title: "Transcription",
-    route: TranscriptionProjectsPage(),
+    route: TranscriptionPage(),
     icon: Icon(Icons.transcribe),
     gradient: LinearGradient(
       begin: Alignment.topLeft,
@@ -16,7 +16,7 @@ enum AppFeatures {
   ),
   ocr(
     title: "OCR",
-    route: OcrProjectPage(),
+    route: OcrPage(),
     icon: Icon(Icons.text_fields),
     gradient: LinearGradient(
       begin: Alignment.topLeft,
@@ -44,7 +44,13 @@ enum AppFeatures {
 class FeatureCard extends StatefulWidget {
   final AppFeatures feature;
 
-  const FeatureCard({super.key, required this.feature});
+  final VoidCallback onPressed;
+
+  const FeatureCard({
+    super.key,
+    required this.feature,
+    required this.onPressed,
+  });
 
   @override
   State<StatefulWidget> createState() => _FeatureCardState();
@@ -57,6 +63,7 @@ class _FeatureCardState extends State<FeatureCard> {
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
+        onTap: widget.onPressed,
         child: Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
@@ -73,11 +80,6 @@ class _FeatureCardState extends State<FeatureCard> {
             ],
           ),
         ),
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => widget.feature.route),
-            ),
       ),
     );
   }
