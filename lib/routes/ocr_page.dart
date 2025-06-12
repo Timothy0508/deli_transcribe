@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../api/database.dart';
 import '../modules/ocr_project.dart';
 
 class OcrPage extends StatefulWidget {
@@ -62,6 +63,26 @@ class _OcrPageState extends State<OcrPage> {
       appBar: appBar,
       body: Row(
         children: [Expanded(child: picturePane), Expanded(child: textPane)],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            ElevatedButton.icon(
+              onPressed: () async {
+                var isar = Database.isar;
+                await isar.writeTxn(() async {
+                  var project = widget.project ?? OcrProject();
+                  project.title = title;
+                  project.imagePath = _imagePath;
+                  project.result = ocrResult;
+                  isar.ocrProjects.put(project);
+                });
+              },
+              label: Text('Save'),
+              icon: Icon(Icons.save),
+            ),
+          ],
+        ),
       ),
     );
   }

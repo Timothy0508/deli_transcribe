@@ -3,7 +3,7 @@ import 'package:isar/isar.dart';
 
 import '../api/database.dart';
 import '../modules/ocr_project.dart';
-import '../widgets/project_list_tile.dart';
+import '../widgets/ocr_project_list_tile.dart';
 
 class OcrProjectPane extends StatefulWidget {
   const OcrProjectPane({super.key});
@@ -47,7 +47,7 @@ class _OcrProjectPaneState extends State<OcrProjectPane> {
         return Expanded(
           child: ListView.builder(
             itemBuilder:
-                (context, index) => ProjectListTile(project: project[index]),
+                (context, index) => OcrProjectListTile(project: project[index]),
             itemCount: project.length,
           ),
         );
