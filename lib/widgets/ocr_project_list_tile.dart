@@ -17,8 +17,10 @@ class _OcrProjectListTileState extends State<OcrProjectListTile> {
   @override
   Widget build(BuildContext context) {
     var isar = Database.isar;
+    String? ext = widget.project.imagePath?.split('.').last;
 
     return ListTile(
+      leading: ext == null ? Icon(Icons.question_mark) : Icon(Icons.image),
       title: Text(widget.project.title ?? ''),
       onTap:
           () => Navigator.push(
