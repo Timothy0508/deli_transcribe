@@ -63,7 +63,7 @@ class _OcrPageState extends State<OcrPage> {
               : Center(
                 child: ElevatedButton.icon(
                   onPressed: null,
-                  label: Text('Detection'),
+                  label: Text('Extract'),
                   icon: Icon(Icons.document_scanner),
                 ),
               ),
@@ -77,7 +77,13 @@ class _OcrPageState extends State<OcrPage> {
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
+          spacing: 8,
           children: [
+            ElevatedButton.icon(
+              onPressed: null,
+              label: Text('Extract'),
+              icon: Icon(Icons.document_scanner),
+            ),
             ElevatedButton.icon(
               onPressed: () async {
                 var isar = Database.isar;
