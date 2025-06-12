@@ -17,13 +17,16 @@ class OcrPage extends StatefulWidget {
 
 class _OcrPageState extends State<OcrPage> {
   String? _imagePath;
+  String? _title;
+  String? _ocrResult;
 
   @override
   Widget build(BuildContext context) {
-    var title = widget.project?.title ?? 'Unnamed Project';
-    var ocrResult = widget.project?.result;
+    _title ??= widget.project?.title;
+    _ocrResult ??= widget.project?.result;
+    _imagePath ??= widget.project?.imagePath;
 
-    var appBar = AppBar(title: Text(title));
+    var appBar = AppBar(title: Text(_title ?? 'Unnamed Project'));
 
     var picturePane = Card(
       child: Center(
@@ -42,6 +45,7 @@ class _OcrPageState extends State<OcrPage> {
                     debugPrint(result.files.first.path);
                     setState(() {
                       _imagePath = result.files.first.path;
+                      _title = result.files.first.name;
                     });
                   },
                   icon: Icon(Icons.add_photo_alternate_outlined),
@@ -51,10 +55,10 @@ class _OcrPageState extends State<OcrPage> {
     );
     var textPane = Card(
       child:
-          ocrResult != null
+          _ocrResult != null
               ? SizedBox(
                 height: MediaQuery.of(context).size.height,
-                child: SelectableText(ocrResult),
+                child: SelectableText(_ocrResult ?? ''),
               )
               : Center(child: Text('No detection')),
     );
@@ -72,9 +76,9 @@ class _OcrPageState extends State<OcrPage> {
                 var isar = Database.isar;
                 await isar.writeTxn(() async {
                   var project = widget.project ?? OcrProject();
-                  project.title = title;
+                  project.title = _title;
                   project.imagePath = _imagePath;
-                  project.result = ocrResult;
+                  project.result = _ocrResult;
                   isar.ocrProjects.put(project);
                 });
               },
