@@ -60,7 +60,13 @@ class _OcrPageState extends State<OcrPage> {
                 height: MediaQuery.of(context).size.height,
                 child: SelectableText(_ocrResult ?? ''),
               )
-              : Center(child: Text('No detection')),
+              : Center(
+                child: ElevatedButton.icon(
+                  onPressed: null,
+                  label: Text('Detection'),
+                  icon: Icon(Icons.document_scanner),
+                ),
+              ),
     );
 
     return Scaffold(
@@ -70,6 +76,7 @@ class _OcrPageState extends State<OcrPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton.icon(
               onPressed: () async {
