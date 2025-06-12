@@ -2,13 +2,16 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart ';
 
 class TranscriptionAudioPlayer extends StatefulWidget {
+  final String audioPath;
+
+  const TranscriptionAudioPlayer({super.key, required this.audioPath});
+
   @override
   State<StatefulWidget> createState() => _TranscriptionAudioPlayerState();
 }
 
 class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
-  double _position = 0;
-  AudioPlayer _player = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer();
   late Duration _duration;
 
   @override
@@ -17,7 +20,14 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
   void initPlayer() async {
+    _player.setSourceDeviceFile(widget.audioPath);
     _duration = (await _player.getDuration())!;
   }
 
@@ -46,6 +56,8 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
         }
       },
     );
-    return Card(child: Column(children: [positionProgress]));
+    return Card(
+      child: Column(children: [Icon(Icons.graphic_eq), positionProgress]),
+    );
   }
 }
