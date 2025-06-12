@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../modules/ocr_project.dart';
 import '../modules/transcriptions.dart';
 
 class Database {
@@ -13,7 +14,7 @@ class Database {
     var path = '${dir.path}/database';
     await Directory(path).create(recursive: true);
     isar = await Isar.open(
-      [TranscriptionsSchema],
+      [TranscriptionsSchema, OcrProjectSchema],
       directory: path,
       inspector: true,
     );
