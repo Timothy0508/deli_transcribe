@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../api/database.dart';
+import '../api/text_recognition.dart';
 import '../modules/ocr_project.dart';
 
 class OcrPage extends StatefulWidget {
@@ -56,8 +57,9 @@ class _OcrPageState extends State<OcrPage> {
     var textPane = Card(
       child:
           _ocrResult != null
-              ? SizedBox(
+              ? Container(
                 height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.all(16),
                 child: SelectableText(_ocrResult ?? ''),
               )
               : Center(
@@ -80,7 +82,17 @@ class _OcrPageState extends State<OcrPage> {
           spacing: 8,
           children: [
             ElevatedButton.icon(
-              onPressed: null,
+              onPressed:
+                  _imagePath == null
+                      ? null
+                      : () async {
+                        var result = await TextRecognition().extractText(
+                          _imagePath!,
+                        );
+                        setState(() {
+                          _ocrResult = result;
+                        });
+                      },
               label: Text('Extract'),
               icon: Icon(Icons.document_scanner),
             ),
