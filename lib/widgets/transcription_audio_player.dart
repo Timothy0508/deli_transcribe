@@ -12,10 +12,22 @@ class TranscriptionAudioPlayer extends StatefulWidget {
 
 class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
   final AudioPlayer _player = AudioPlayer();
+  Duration? _duration;
+  Duration? _position;
 
   @override
   void initState() {
     _player.setSourceDeviceFile(widget.audioPath);
+    _player.onDurationChanged.listen((duration) {
+      setState(() {
+        _duration = duration;
+      });
+    });
+    _player.onPositionChanged.listen((position) {
+      setState(() {
+        _position = position;
+      });
+    });
     super.initState();
   }
 
@@ -28,38 +40,12 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var positionProgress = StreamBuilder(
-      stream: _player.onDurationChanged,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var duration = snapshot.data!;
-          return StreamBuilder(
-            stream: _player.onPositionChanged,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return LinearProgressIndicator(
-                  value: 1.0,
-                  color: theme.colorScheme.error,
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return LinearProgressIndicator(value: 0);
-              }
-
-              var position = snapshot.data;
-              if (position == null) {
-                return LinearProgressIndicator(value: 0);
-              } else {
-                return LinearProgressIndicator(
-                  value: position.inSeconds / duration.inSeconds,
-                );
-              }
-            },
-          );
-        } else {
-          return LinearProgressIndicator();
-        }
-      },
-    );
+    var positionProgress =
+        _duration == null || _position == null || _duration == Duration.zero
+            ? LinearProgressIndicator()
+            : LinearProgressIndicator(
+              value: _position!.inSeconds / _duration!.inSeconds,
+            );
     return Card(
       child: Container(
         padding: EdgeInsets.all(16),
@@ -73,6 +59,7 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
                 _player.state == PlayerState.completed
                     ? setState(() {
                       _player.stop();
+                      _player.setSourceDeviceFile(widget.audioPath);
                     })
                     : _player.resume();
               },
