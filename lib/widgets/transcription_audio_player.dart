@@ -62,15 +62,14 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
     );
     return Card(
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(Icons.graphic_eq),
+            Icon(Icons.graphic_eq, size: 56),
             positionProgress,
             IconButton(
               onPressed: () {
-                print(_player.state);
                 _player.state == PlayerState.completed
                     ? setState(() {
                       _player.stop();

@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../api/database.dart';
 import '../api/whisper.dart';
 import '../modules/srt_entry.dart';
 import '../modules/transcriptions.dart';
@@ -32,6 +33,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
   bool _isTranscribing = false;
   List<HuggingFaceModel> _availableModels = [];
   HuggingFaceModel? _selectedModel;
+  Transcriptions? _project;
 
   void init() async {
     var models = await _getAvailableModels();
@@ -132,6 +134,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
 
   @override
   void initState() {
+    _project = widget.project ?? Transcriptions();
     setState(() {
       init();
     });
@@ -140,9 +143,9 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.project?.transcription != null) {
+    if (_project?.transcription != null) {
       setState(() {
-        _srtEntries = parseSrtContent(widget.project?.transcription! ?? '');
+        _srtEntries = parseSrtContent(_project?.transcription! ?? '');
         _body = List.generate(
           _srtEntries.length,
           (index) => TransTextListTile.fromSrtEntry(entry: _srtEntries[index]),
@@ -150,8 +153,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       });
     }
 
-    var title =
-        widget.project?.title ?? _currentFile?.name ?? 'No file selected';
+    var title = _project?.title ?? _currentFile?.name ?? 'No file selected';
     var displayModeButton = SegmentedButton(
       segments: [
         ButtonSegment(
@@ -231,7 +233,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
     );
 
     var player =
-        widget.project?.isVideo ?? true
+        _project?.isVideo ?? true
             ? Expanded(
               child: Card(
                 child: Center(child: Text(('File not support playing'))),
@@ -239,7 +241,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
             )
             : Expanded(
               child: TranscriptionAudioPlayer(
-                audioPath: widget.project?.filePath ?? '',
+                audioPath: _project?.filePath ?? '',
               ),
             );
 
@@ -248,12 +250,31 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              var isar = Database.isar;
+              var project = _project ?? Transcriptions();
+              project.title = title;
+              project.filePath = _currentFile?.path;
+              project.transcription = convertSrtEntriesToSrtFormat(_srtEntries);
+              project.isVideo = _isVideo(_currentFile?.path!.split('.').last);
+              await isar.writeTxn(() async {
+                isar.transcriptions.put(project);
+              });
+            },
+            icon: Icon(Icons.save),
+          ),
+        ],
+      ),
       body: Row(children: [player, displayPane]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await showImportFileDialog(context);
           if (result == null) return;
+          _project?.isVideo = _isVideo(_currentFile?.path?.split('.').last);
           setState(() {
             _currentFile = result.files.first;
           });
