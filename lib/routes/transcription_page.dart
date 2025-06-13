@@ -6,12 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../api/database.dart';
 import '../api/whisper.dart';
 import '../modules/srt_entry.dart';
 import '../modules/transcriptions.dart';
 import '../widgets/import_file_dialog.dart';
 import '../widgets/trans_text_list_tile.dart';
+import '../widgets/transcription_audio_player.dart';
 
 class TranscriptionPage extends StatefulWidget {
   final Transcriptions? project;
@@ -172,28 +172,24 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
         });
       },
     );
-    var srtBody = SliverList.separated(
+    var srtBody = ListView.separated(
       itemBuilder: (context, index) => _body[index],
       itemCount: _body.length,
       separatorBuilder: (context, index) => const Divider(),
     );
-    var textBody = SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: SelectableText(convertSrtEntriesToText(_srtEntries)),
-      ),
+    var textBody = Container(
+      padding: EdgeInsets.all(20),
+      child: SelectableText(convertSrtEntriesToText(_srtEntries)),
     );
     var resultBody = _displayMode == DisplayMode.srt ? srtBody : textBody;
-    var processingBody = SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          spacing: 20,
-          children: [
-            Text('Processing...'),
-            SizedBox(width: 200, child: LinearProgressIndicator()),
-          ],
-        ),
+    var processingBody = Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        spacing: 20,
+        children: [
+          Text('Processing...'),
+          SizedBox(width: 200, child: LinearProgressIndicator()),
+        ],
       ),
     );
     var clearButton = ElevatedButton.icon(
@@ -206,14 +202,12 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       label: Text('Clear'),
       icon: Icon(Icons.delete),
     );
-    var tools = SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Row(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [clearButton, displayModeButton],
-        ),
+    var tools = Padding(
+      padding: EdgeInsets.all(20),
+      child: Row(
+        spacing: 10,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [clearButton, displayModeButton],
       ),
     );
     var body = _isTranscribing ? processingBody : resultBody;
@@ -236,61 +230,26 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       },
     );
 
+    var player =
+        widget.project?.isVideo ?? true
+            ? Expanded(
+              child: Card(
+                child: Center(child: Text(('File not support playing'))),
+              ),
+            )
+            : Expanded(
+              child: TranscriptionAudioPlayer(
+                audioPath: widget.project?.filePath ?? '',
+              ),
+            );
+
+    var displayPane = Expanded(
+      child: Card(child: Column(children: [tools, Expanded(child: body)])),
+    );
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            actions: [
-              IconButton(
-                onPressed: () async {
-                  var isar = Database.isar;
-                  await isar.writeTxn(() async {
-                    var transcription = widget.project ?? Transcriptions();
-                    transcription.title =
-                        widget.project?.title ?? _currentFile?.name;
-                    transcription.filePath =
-                        widget.project?.title ?? _currentFile?.path;
-                    transcription.transcription = convertSrtEntriesToSrtFormat(
-                      _srtEntries,
-                    );
-                    transcription.isVideo = _isVideo(
-                      _currentFile?.extension ??
-                          widget.project?.filePath?.split('.').last,
-                    );
-                    await isar.transcriptions.put(transcription);
-                  });
-                },
-                icon: Icon(Icons.save),
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Row(
-                spacing: _currentFile != null ? 10 : 0,
-                children: [
-                  _isVideo(
-                            _currentFile?.extension ??
-                                widget.project?.filePath?.split('.').last,
-                          ) ==
-                          true
-                      ? Icon(Icons.videocam)
-                      : _isVideo(
-                            _currentFile?.extension ??
-                                widget.project?.filePath?.split('.').last,
-                          ) ==
-                          false
-                      ? Icon(Icons.audiotrack)
-                      : SizedBox(),
-                  Text(title, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            ),
-            expandedHeight: 200,
-            pinned: true,
-          ),
-          tools,
-          body,
-        ],
-      ),
+      appBar: AppBar(title: Text(title)),
+      body: Row(children: [player, displayPane]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await showImportFileDialog(context);

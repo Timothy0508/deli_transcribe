@@ -12,11 +12,10 @@ class TranscriptionAudioPlayer extends StatefulWidget {
 
 class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
   final AudioPlayer _player = AudioPlayer();
-  late Duration _duration;
 
   @override
   void initState() {
-    initPlayer();
+    _player.setSourceDeviceFile(widget.audioPath);
     super.initState();
   }
 
@@ -26,33 +25,38 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
     super.dispose();
   }
 
-  void initPlayer() async {
-    _player.setSourceDeviceFile(widget.audioPath);
-    _duration = (await _player.getDuration())!;
-  }
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var positionProgress = StreamBuilder(
-      stream: _player.onPositionChanged,
+      stream: _player.onDurationChanged,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return LinearProgressIndicator(
-            value: 1.0,
-            color: theme.colorScheme.error,
-          );
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return LinearProgressIndicator();
-        }
+        if (snapshot.hasData) {
+          var duration = snapshot.data!;
+          return StreamBuilder(
+            stream: _player.onPositionChanged,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return LinearProgressIndicator(
+                  value: 1.0,
+                  color: theme.colorScheme.error,
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return LinearProgressIndicator();
+              }
 
-        var position = snapshot.data;
-        if (position == null) {
-          return LinearProgressIndicator();
-        } else {
-          return LinearProgressIndicator(
-            value: position.inSeconds / _duration.inSeconds,
+              var position = snapshot.data;
+              if (position == null) {
+                return LinearProgressIndicator(value: 0);
+              } else {
+                return LinearProgressIndicator(
+                  value: position.inSeconds / duration.inSeconds,
+                );
+              }
+            },
           );
+        } else {
+          return LinearProgressIndicator();
         }
       },
     );
