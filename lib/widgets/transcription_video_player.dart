@@ -50,9 +50,11 @@ class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
         } else {
           _playerController.play();
         }
-        _isPlaying = !_isPlaying;
+        setState(() {
+          _isPlaying = !_isPlaying;
+        });
       },
-      icon: Icon(Icons.play_arrow),
+      icon: _isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
     );
 
     var body = Column(
