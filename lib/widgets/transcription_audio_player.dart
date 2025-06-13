@@ -42,7 +42,7 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
                   color: theme.colorScheme.error,
                 );
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return LinearProgressIndicator();
+                return LinearProgressIndicator(value: 0);
               }
 
               var position = snapshot.data;
@@ -61,7 +61,30 @@ class _TranscriptionAudioPlayerState extends State<TranscriptionAudioPlayer> {
       },
     );
     return Card(
-      child: Column(children: [Icon(Icons.graphic_eq), positionProgress]),
+      child: Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(Icons.graphic_eq),
+            positionProgress,
+            IconButton(
+              onPressed: () {
+                print(_player.state);
+                _player.state == PlayerState.completed
+                    ? setState(() {
+                      _player.stop();
+                    })
+                    : _player.resume();
+              },
+              icon:
+                  _player.state == PlayerState.completed
+                      ? Icon(Icons.restart_alt)
+                      : Icon(Icons.play_arrow),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
