@@ -14,6 +14,7 @@ class TranscriptionVideoPlayer extends StatefulWidget {
 
 class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
   late VideoPlayerController _playerController;
+  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -40,6 +41,27 @@ class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
             )
             : Icon(Icons.videocam_off);
 
-    return Card(child: Center(child: player));
+    var progress = LinearProgressIndicator(value: 0);
+
+    var actions = IconButton(
+      onPressed: () {
+        if (_isPlaying) {
+          _playerController.pause();
+        } else {
+          _playerController.play();
+        }
+        _isPlaying = !_isPlaying;
+      },
+      icon: Icon(Icons.play_arrow),
+    );
+
+    var body = Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [player, progress, actions],
+    );
+
+    return Card(
+      child: Container(padding: EdgeInsets.all(16), child: Center(child: body)),
+    );
   }
 }
