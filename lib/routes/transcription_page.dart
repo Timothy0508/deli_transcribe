@@ -13,6 +13,7 @@ import '../modules/transcriptions.dart';
 import '../widgets/import_file_dialog.dart';
 import '../widgets/trans_text_list_tile.dart';
 import '../widgets/transcription_audio_player.dart';
+import '../widgets/transcription_video_player.dart';
 
 class TranscriptionPage extends StatefulWidget {
   final Transcriptions? project;
@@ -235,8 +236,8 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
     var player =
         _project?.isVideo ?? true
             ? Expanded(
-              child: Card(
-                child: Center(child: Text(('File not support playing'))),
+              child: TranscriptionVideoPlayer(
+                videoPath: _project?.filePath ?? '',
               ),
             )
             : Expanded(
