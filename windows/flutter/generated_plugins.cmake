@@ -3,8 +3,12 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  audioplayers_windows
   isar_flutter_libs
   libmpv_dart
+  media_kit_libs_windows_video
+  media_kit_video
+  volume_controller
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

@@ -12,6 +12,8 @@ import '../modules/srt_entry.dart';
 import '../modules/transcriptions.dart';
 import '../widgets/import_file_dialog.dart';
 import '../widgets/trans_text_list_tile.dart';
+import '../widgets/transcription_audio_player.dart';
+import '../widgets/transcription_video_player.dart';
 
 class TranscriptionPage extends StatefulWidget {
   final Transcriptions? project;
@@ -32,6 +34,8 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
   bool _isTranscribing = false;
   List<HuggingFaceModel> _availableModels = [];
   HuggingFaceModel? _selectedModel;
+  Transcriptions? _project;
+  bool? _video;
 
   void init() async {
     var models = await _getAvailableModels();
@@ -132,6 +136,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
 
   @override
   void initState() {
+    _project = widget.project ?? Transcriptions();
     setState(() {
       init();
     });
@@ -140,9 +145,9 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.project?.transcription != null) {
+    if (_project?.transcription != null) {
       setState(() {
-        _srtEntries = parseSrtContent(widget.project?.transcription! ?? '');
+        _srtEntries = parseSrtContent(_project?.transcription! ?? '');
         _body = List.generate(
           _srtEntries.length,
           (index) => TransTextListTile.fromSrtEntry(entry: _srtEntries[index]),
@@ -150,8 +155,17 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       });
     }
 
-    var title =
-        widget.project?.title ?? _currentFile?.name ?? 'No file selected';
+    if (_project?.isVideo != null) {
+      setState(() {
+        _video = _project?.isVideo;
+      });
+    } else if (_currentFile != null) {
+      setState(() {
+        _video = _isVideo(_currentFile?.path?.split('.').last);
+      });
+    }
+
+    var title = _project?.title ?? _currentFile?.name ?? 'No file selected';
     var displayModeButton = SegmentedButton(
       segments: [
         ButtonSegment(
@@ -172,28 +186,24 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
         });
       },
     );
-    var srtBody = SliverList.separated(
+    var srtBody = ListView.separated(
       itemBuilder: (context, index) => _body[index],
       itemCount: _body.length,
       separatorBuilder: (context, index) => const Divider(),
     );
-    var textBody = SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: SelectableText(convertSrtEntriesToText(_srtEntries)),
-      ),
+    var textBody = Container(
+      padding: EdgeInsets.all(20),
+      child: SelectableText(convertSrtEntriesToText(_srtEntries)),
     );
     var resultBody = _displayMode == DisplayMode.srt ? srtBody : textBody;
-    var processingBody = SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          spacing: 20,
-          children: [
-            Text('Processing...'),
-            SizedBox(width: 200, child: LinearProgressIndicator()),
-          ],
-        ),
+    var processingBody = Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        spacing: 20,
+        children: [
+          Text('Processing...'),
+          SizedBox(width: 200, child: LinearProgressIndicator()),
+        ],
       ),
     );
     var clearButton = ElevatedButton.icon(
@@ -206,14 +216,12 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       label: Text('Clear'),
       icon: Icon(Icons.delete),
     );
-    var tools = SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Row(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [clearButton, displayModeButton],
-        ),
+    var tools = Padding(
+      padding: EdgeInsets.all(20),
+      child: Row(
+        spacing: 10,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [clearButton, displayModeButton],
       ),
     );
     var body = _isTranscribing ? processingBody : resultBody;
@@ -236,65 +244,53 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       },
     );
 
+    var player =
+        _video == null
+            ? Expanded(
+              child: Card(child: Center(child: Icon(Icons.folder_off))),
+            )
+            : _video == true
+            ? Expanded(
+              child: TranscriptionVideoPlayer(
+                videoPath: _project?.filePath ?? '',
+              ),
+            )
+            : Expanded(
+              child: TranscriptionAudioPlayer(
+                audioPath: _project?.filePath ?? '',
+              ),
+            );
+
+    var displayPane = Expanded(
+      child: Card(child: Column(children: [tools, Expanded(child: body)])),
+    );
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            actions: [
-              IconButton(
-                onPressed: () async {
-                  var isar = Database.isar;
-                  await isar.writeTxn(() async {
-                    var transcription = widget.project ?? Transcriptions();
-                    transcription.title =
-                        widget.project?.title ?? _currentFile?.name;
-                    transcription.filePath =
-                        widget.project?.title ?? _currentFile?.path;
-                    transcription.transcription = convertSrtEntriesToSrtFormat(
-                      _srtEntries,
-                    );
-                    transcription.isVideo = _isVideo(
-                      _currentFile?.extension ??
-                          widget.project?.filePath?.split('.').last,
-                    );
-                    await isar.transcriptions.put(transcription);
-                  });
-                },
-                icon: Icon(Icons.save),
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Row(
-                spacing: _currentFile != null ? 10 : 0,
-                children: [
-                  _isVideo(
-                            _currentFile?.extension ??
-                                widget.project?.filePath?.split('.').last,
-                          ) ==
-                          true
-                      ? Icon(Icons.videocam)
-                      : _isVideo(
-                            _currentFile?.extension ??
-                                widget.project?.filePath?.split('.').last,
-                          ) ==
-                          false
-                      ? Icon(Icons.audiotrack)
-                      : SizedBox(),
-                  Text(title, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            ),
-            expandedHeight: 200,
-            pinned: true,
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              var isar = Database.isar;
+              var project = _project ?? Transcriptions();
+              project.title = title;
+              project.filePath = _currentFile?.path;
+              project.transcription = convertSrtEntriesToSrtFormat(_srtEntries);
+              project.isVideo = _isVideo(_currentFile?.path!.split('.').last);
+              await isar.writeTxn(() async {
+                isar.transcriptions.put(project);
+              });
+            },
+            icon: Icon(Icons.save),
           ),
-          tools,
-          body,
         ],
       ),
+      body: Row(children: [player, displayPane]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await showImportFileDialog(context);
           if (result == null) return;
+          _project?.isVideo = _isVideo(_currentFile?.path?.split('.').last);
           setState(() {
             _currentFile = result.files.first;
           });
