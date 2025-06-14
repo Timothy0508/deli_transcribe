@@ -15,6 +15,7 @@ class TranscriptionVideoPlayer extends StatefulWidget {
 class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
   late VideoPlayerController _playerController;
   bool _isPlaying = false;
+  double _process = 0;
 
   @override
   void initState() {
@@ -22,6 +23,15 @@ class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
       ..initialize().then((_) {
         setState(() {});
       });
+    _playerController.addListener(
+      () => setState(() {
+        _process =
+            _playerController.value.isInitialized
+                ? _playerController.value.position.inSeconds /
+                    _playerController.value.duration.inSeconds
+                : 0;
+      }),
+    );
     super.initState();
   }
 
@@ -41,7 +51,7 @@ class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
             )
             : Icon(Icons.videocam_off);
 
-    var progress = LinearProgressIndicator(value: 0);
+    var progress = LinearProgressIndicator(value: _process);
 
     var actions = IconButton(
       onPressed: () {
