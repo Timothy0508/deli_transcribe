@@ -35,6 +35,7 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
   List<HuggingFaceModel> _availableModels = [];
   HuggingFaceModel? _selectedModel;
   Transcriptions? _project;
+  bool? _video;
 
   void init() async {
     var models = await _getAvailableModels();
@@ -154,6 +155,16 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
       });
     }
 
+    if (_project?.isVideo != null) {
+      setState(() {
+        _video = _project?.isVideo;
+      });
+    } else if (_currentFile != null) {
+      setState(() {
+        _video = _isVideo(_currentFile?.path?.split('.').last);
+      });
+    }
+
     var title = _project?.title ?? _currentFile?.name ?? 'No file selected';
     var displayModeButton = SegmentedButton(
       segments: [
@@ -234,7 +245,11 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
     );
 
     var player =
-        _project?.isVideo ?? true
+        _video == null
+            ? Expanded(
+              child: Card(child: Center(child: Icon(Icons.folder_off))),
+            )
+            : _video == true
             ? Expanded(
               child: TranscriptionVideoPlayer(
                 videoPath: _project?.filePath ?? '',
