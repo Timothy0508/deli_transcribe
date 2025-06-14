@@ -30,6 +30,10 @@ class _TranscriptionVideoPlayerState extends State<TranscriptionVideoPlayer> {
                 ? _playerController.value.position.inSeconds /
                     _playerController.value.duration.inSeconds
                 : 0;
+        if (_playerController.value.position ==
+            _playerController.value.duration) {
+          _isPlaying = false;
+        }
       }),
     );
     super.initState();
